@@ -2,7 +2,8 @@ import { Component } from 'react';
 import { api } from 'services/restApi';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import {Div} from './CssForApp/App.styled'
+import { Button } from './Button/Button';
+import { Div } from './CssForApp/App.styled';
 
 export class App extends Component {
   state = {
@@ -33,10 +34,14 @@ export class App extends Component {
     const { hits, totalHits } = response;    
     const imgData = hits.map(item => { return { id: item.id, disc: item.tags, smallImg: item.webformatURL, bigImg: item.largeImageURL } })
     this.setState({
-      photoArr: imgData,
+      photoArr: [...this.state.photoArr, ...imgData],
       page: page,
       totalPages: Math.ceil(totalHits/12)
     });   
+  }
+
+  clickButton = () => {
+    this.setState(prev => ({ page: prev.page + 1 }));
   }
 
   componentDidUpdate(_, prevState) {
@@ -46,7 +51,7 @@ export class App extends Component {
     const { query, page } = this.state;
 
     if (preQuery !== query || prePage !== page) {
-      try {
+      try {        
         this.newFetch(query, page);
       }
       catch (error) {
@@ -61,7 +66,7 @@ export class App extends Component {
       <Div>
         <Searchbar onSubmit={this.obtainQuery}></Searchbar>
         <ImageGallery imageColection={this.state.photoArr}></ImageGallery>
-        
+        <Button onClick={this.clickButton}></Button>       
       </Div>
     );
   }

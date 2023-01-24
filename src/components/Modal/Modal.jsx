@@ -23,19 +23,20 @@ export class Modal extends Component {
     }
   };
 
-  testImage = (URL) =>{
-    console.log(URL)
-    let tester=new Image();
-    tester.onerror=this.imageNotFound;
-    tester.src=URL;
+  testImage = URL => {
+    let tester = new Image();
+    tester.onerror = this.imageNotFound;
+    tester.src = URL;
     return URL;
-}
+  };
 
   imageNotFound = () => {
     this.props.onCloseModal();
-    this.setState({ modalSppiner: false });    
-     Notify.failure('That image was not found!!! Probably problems with the Internet connection!!!');
-}
+    this.setState({ modalSppiner: false });
+    Notify.failure(
+      'That image was not found!!! Probably problems with the Internet connection!!!'
+    );
+  };
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleEsc);
@@ -57,7 +58,11 @@ export class Modal extends Component {
             <ReactSVG2 width={50} height={50} />
           </ModalButton>
           <ImageBox>
-            <ModalImg onerror="src='../../image/no_internet.webp'" src={this.testImage(bigImg)} alt={ discription } />
+            <ModalImg
+              onerror="src='../../image/no_internet.webp'"
+              src={this.testImage(bigImg)}
+              alt={discription}
+            />
           </ImageBox>
         </ModalOverlay>
         {this.state.modalSppiner && <Loader />}

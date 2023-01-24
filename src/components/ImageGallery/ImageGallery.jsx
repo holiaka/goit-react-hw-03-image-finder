@@ -6,8 +6,7 @@ import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 export const ImageGallery = ({ imageColection }) => {
   return (
     <Gallery>
-      {imageColection.map(({ id, disc, smallImg, bigImg }) => {
-        console.log(id, disc, smallImg, bigImg)
+      {imageColection.map(({ id, disc, smallImg, bigImg }) => {        
         return (
           <ImageGalleryItem
             key={id}

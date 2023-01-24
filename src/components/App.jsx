@@ -2,20 +2,22 @@ import { Component } from 'react';
 import { api } from 'services/restApi';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import { Div } from './CssForApp/App.styled';
 
 export class App extends Component {
   state = {
-    query: '', 
+    query: '',
     photoArr: [],
     page: 1,
     totalPages: null,
-    isloading: false,
-    error: null
+    isLoading: false,
+    btnActive: false,
+    error: null,
   };
 
-  obtainQuery = (evt) => {
+  obtainQuery = evt => {
     evt.preventDefault();
     const { value } = evt.target.elements.query;
     if (this.state.query !== value.trim()) {
@@ -23,26 +25,42 @@ export class App extends Component {
         query: value.trim(),
         photoArr: [],
         page: 1,
-        totalPages: null
+        totalPages: null,
       });
-    } 
-    evt.target.elements.query.value = "";    
-  }
+    }
+    evt.target.elements.query.value = '';
+  };
 
-  newFetch = async (query, page) => {
-    const response = await api(query, page);
-    const { hits, totalHits } = response;    
-    const imgData = hits.map(item => { return { id: item.id, disc: item.tags, smallImg: item.webformatURL, bigImg: item.largeImageURL } })
+  newFetch = async (query, exPage) => {
+    this.setState({ isLoading: true });
+    const response = await api(query, exPage);
+    const { hits, totalHits } = response;
+    const allPages = Math.ceil(totalHits / 12);
+    const imgData = hits.map(item => {
+      return {
+        id: item.id,
+        disc: item.tags,
+        smallImg: item.webformatURL,
+        bigImg: item.largeImageURL,
+      };
+    });
     this.setState({
       photoArr: [...this.state.photoArr, ...imgData],
-      page: page,
-      totalPages: Math.ceil(totalHits/12)
-    });   
-  }
+      page: exPage,
+      totalPages: allPages,
+    });
+    if (exPage < allPages) {
+      this.setState({ btnActive: true });
+    } else {
+      this.setState({ btnActive: false });
+    };
+    this.setState({ isLoading: false });
+    console.log(this.state)
+  };
 
   clickButton = () => {
     this.setState(prev => ({ page: prev.page + 1 }));
-  }
+  };
 
   componentDidUpdate(_, prevState) {
     const preQuery = prevState.query;
@@ -52,21 +70,21 @@ export class App extends Component {
 
     if (preQuery !== query || prePage !== page) {
       try {        
-        this.newFetch(query, page);
-      }
-      catch (error) {
+        this.newFetch(query, page);        
+      } catch (error) {
         console.log(error.message);
       }
-      
     }
   }
-  
-  render() {    
+
+  render() {
     return (
       <Div>
         <Searchbar onSubmit={this.obtainQuery}></Searchbar>
         <ImageGallery imageColection={this.state.photoArr}></ImageGallery>
-        <Button onClick={this.clickButton}></Button>       
+        {this.state.isLoading && <Loader />}
+        {this.state.btnActive && <Button onClick={this.clickButton}></Button>}
+        
       </Div>
     );
   }

@@ -6,7 +6,7 @@ import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
 export class ImageGallery extends Component {
   render(){
-    const{imageColection}= this.props;
+    const{imageColection} = this.props;
 
     return (
     <Gallery>
@@ -29,5 +29,5 @@ export class ImageGallery extends Component {
 };
 
 ImageGallery.propTypes = {
-  imageColection: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  imageColection: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired
 };

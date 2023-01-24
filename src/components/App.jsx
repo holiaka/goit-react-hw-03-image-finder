@@ -14,8 +14,7 @@ export class App extends Component {
     page: 1,
     totalPages: null,
     isLoading: false,
-    btnActive: false,
-    error: null,
+    btnActive: false    
   };
 
   obtainQuery = evt => {
@@ -24,6 +23,10 @@ export class App extends Component {
     const transfValue = value.trim();
     if (transfValue === '') {
       Notify.warning('Please enter a request!!');
+      this.setState({
+        photoArr: [],
+        btnActive: false
+      });
       return;
     } else if (this.state.query !== transfValue) {
       this.setState({

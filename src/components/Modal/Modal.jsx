@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 import { ReactComponent as ReactSVG2 } from '../../image/svg/circle_close_icon.svg';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ModalOverlay, ImageBox, ModalButton, ModalImg } from './Modal.style';
@@ -70,4 +71,10 @@ export class Modal extends Component {
       modalRoot
     );
   }
+}
+
+Modal.propTypes = {
+  bigImg: PropTypes.string.isRequired,
+  discription: PropTypes.string.isRequired,
+  onCloseModal: PropTypes.func.isRequired  
 }

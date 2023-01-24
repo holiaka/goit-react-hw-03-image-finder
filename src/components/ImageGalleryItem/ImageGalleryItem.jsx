@@ -4,36 +4,34 @@ import PropTypes from 'prop-types';
 import { Image, Item } from './ImageGalleryItem.styled';
 
 export class ImageGalleryItem extends Component {
-    state = {
-        photoIdx: null,
-        showModal: false
-  }
+  state = {    
+    showModal: false,
+  };
 
-  onClickPhoto = (evt) => {
-    const { id } = evt.currentTarget;
-      this.setState({
-          photoIdx: id,
-          showModal: true
-      });
-    console.log(this.state);
-  }
-    
-    componentDidUpdate(_, prevState) { 
+  onClickPhoto = () => {    
+    this.setState({     
+      showModal: true,
+    });   
+  };
 
-    }
-    
+  onCloseModal = () => {
+    this.setState({ showModal: false });
+  };
+
   render() {
-    const { discription, smallImg, bigImg, id} =
-      this.props;
+    const { discription, smallImg, bigImg, id } = this.props;
     return (
       <>
         <Item id={id} onClick={this.onClickPhoto}>
-          <Image
-            src={smallImg}
-            alt={discription}            
+          <Image src={smallImg} alt={discription} />
+        </Item>
+        {this.state.showModal && (
+          <Modal
+            bigImg={bigImg}
+            discription={discription}
+            onCloseModal={this.onCloseModal}
           />
-        </Item>       
-            {this.state.showModal===id && <Modal bigImg={bigImg} discription={discription} />}        
+        )}
       </>
     );
   }

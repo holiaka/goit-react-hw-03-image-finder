@@ -6,18 +6,22 @@ import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
 export class ImageGallery extends Component {
   render(){
-    const{imageColection} = this.props;
+    const{state, switchModal} = this.props;
 
     return (
     <Gallery>
-      {imageColection.map(({disc, smallImg, bigImg }, idx) => {        
+      {state.photoArr.map(({disc, smallImg, bigImg }, idx) => {        
         return (
-          <ImageGalleryItem
+          <ImageGalleryItem onClick={switchModal}
             key={idx}
             id={idx}
             discription={disc}
             smallImg={smallImg}
             bigImg={bigImg}
+            showModal={state.showModal}
+            isLoading={state.isLoading}
+            switchModal={switchModal}
+            srcSelectPhoto={state.srcSelectPhoto}
           />
         )
       }
@@ -29,5 +33,6 @@ export class ImageGallery extends Component {
 };
 
 ImageGallery.propTypes = {
-  imageColection: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired
+  state: PropTypes.object.isRequired,
+  switchModal: PropTypes.func.isRequired
 };

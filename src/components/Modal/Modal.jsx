@@ -10,17 +10,14 @@ import { Loader } from 'components/Loader/Loader';
 const modalRoot = document.getElementById('modal-root');
 
 export class Modal extends Component {
-  state = {
-    modalSppiner: false,
-  };
 
-  handleEsc = () => {
-    this.props.onCloseModal();
+  handleEsc = (evt) => {
+    this.props.switchModal(evt);
   };
 
   handleBackdrop = evt => {
     if (evt.target === evt.currentTarget) {
-      this.props.onCloseModal();
+      this.props.switchModal(evt);
     }
   };
 
@@ -32,17 +29,14 @@ export class Modal extends Component {
   };
 
   imageNotFound = () => {
-    this.props.onCloseModal();
-    this.setState({ modalSppiner: false });
+    this.props.switchModal();    
     Notify.failure(
       'That image was not found!!! Probably problems with the Internet connection!!!'
     );
   };
 
   componentDidMount() {
-    window.addEventListener('keydown', this.handleEsc);
-    this.setState({ modalSppiner: true });
-    window.setTimeout(() => this.setState({ modalSppiner: false }), 1000);
+    window.addEventListener('keydown', this.handleEsc);    
   }
 
   componentWillUnmount() {
@@ -50,12 +44,12 @@ export class Modal extends Component {
   }
 
   render() {
-    const { bigImg, discription, onCloseModal } = this.props;
+    const { bigImg, discription, isLoading, switchModal } = this.props;
 
     return createPortal(
       <>
         <ModalOverlay onClick={this.handleBackdrop}>
-          <ModalButton type="button" onClick={onCloseModal}>
+          <ModalButton type="button" onClick={switchModal}>
             <ReactSVG2 width={50} height={50} />
           </ModalButton>
           <ImageBox>
@@ -66,7 +60,7 @@ export class Modal extends Component {
             />
           </ImageBox>
         </ModalOverlay>
-        {this.state.modalSppiner && <Loader />}
+        {isLoading && <Loader />}
       </>,
       modalRoot
     );
@@ -76,5 +70,6 @@ export class Modal extends Component {
 Modal.propTypes = {
   bigImg: PropTypes.string.isRequired,
   discription: PropTypes.string.isRequired,
-  onCloseModal: PropTypes.func.isRequired  
+  isLoading: PropTypes.bool.isRequired,
+  switchModal: PropTypes.func.isRequired  
 }

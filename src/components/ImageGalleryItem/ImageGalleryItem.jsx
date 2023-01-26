@@ -4,32 +4,21 @@ import PropTypes from 'prop-types';
 import { Image, Item } from './ImageGalleryItem.styled';
 
 export class ImageGalleryItem extends Component {
-  state = {    
-    showModal: false,
-  };
-
-  onClickPhoto = () => {    
-    this.setState({     
-      showModal: true,
-    });   
-  };
-
-  onCloseModal = () => {
-    this.setState({ showModal: false });
-  };
-
+  
   render() {
-    const { discription, smallImg, bigImg, id } = this.props;
+    const { discription, smallImg, bigImg, id, showModal, isLoading, switchModal, srcSelectPhoto } = this.props;
     return (
       <>
-        <Item id={id} onClick={this.onClickPhoto}>
+        <Item id={id} onClick={switchModal}>
           <Image src={smallImg} alt={discription} />
         </Item>
-        {this.state.showModal && (
+        {showModal && srcSelectPhoto===smallImg && (
           <Modal
             bigImg={bigImg}
-            discription={discription}
-            onCloseModal={this.onCloseModal}
+            discription={discription}    
+            isLoading={isLoading}
+            switchModal={switchModal}
+
           />
         )}
       </>
@@ -41,5 +30,9 @@ ImageGalleryItem.propTypes = {
   id: PropTypes.number.isRequired,
   discription: PropTypes.string.isRequired,
   smallImg: PropTypes.string.isRequired,
-  bigImg: PropTypes.string.isRequired
+  bigImg: PropTypes.string.isRequired,
+  showModal: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  switchModal: PropTypes.func.isRequired,
+  srcSelectPhoto: PropTypes.string.isRequired
 };

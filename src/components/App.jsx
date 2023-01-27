@@ -5,18 +5,18 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
+import { Modal } from 'components/Modal/Modal';
 import { Div } from './CssForApp/App.styled';
 
 export class App extends Component {
   state = {
     query: '',
     photoArr: [],
-    page: 1,
-    totalPages: null,
+    page: 1,  
     isLoading: false,
     btnActive: false,
     showModal: false,
-    srcSelectPhoto: '',
+    selectPhotoId: '',
   };
 
   addSearchQueryParam = obj => {
@@ -28,20 +28,18 @@ export class App extends Component {
   };
 
   switchModal = evt => {
-    const { currentSrc } = evt.target;
-    if (!currentSrc) {
+    const { id } = evt.target.parentNode;
+    
+    if (!id) {
       this.setState({
         showModal: false,
-        isLoading: false,
-        srcSelectPhoto: '',
+        selectPhotoId: '',
       });
-    } else if (currentSrc) {    
+    } else if (id) {    
       this.setState({
         showModal: true,
-        isLoading: true,
-        srcSelectPhoto: currentSrc,
+        selectPhotoId: id,
       });
-      window.setTimeout(() => this.setState({ isLoading: false }), 1000);
     }
   };
 
@@ -58,7 +56,6 @@ export class App extends Component {
         return;
       }
       const { hits, totalHits } = response;
-      const allPages = Math.ceil(totalHits / 12);
 
       if (!totalHits) {
         Notify.failure('Unfortunately, nothing was found for your request!');
@@ -79,17 +76,16 @@ export class App extends Component {
         };
       });
 
-      this.setState({
-        photoArr: [...this.state.photoArr, ...imgData],
-        page: page,
-        totalPages: allPages,
-      });
-
-      if (page < allPages || !totalHits) {
+      if (page < Math.ceil(totalHits / 12) || !totalHits) {
         this.setState({ btnActive: true });
       } else {
         this.setState({ btnActive: false });
       }
+
+      this.setState({
+        photoArr: [...this.state.photoArr, ...imgData],
+        page: page        
+      });      
     }
   }
 
@@ -106,6 +102,12 @@ export class App extends Component {
         ></ImageGallery>
         {this.state.isLoading && <Loader />}
         {this.state.btnActive && <Button onClick={this.clickButton}></Button>}
+        {this.state.showModal && this.state.photoArr[this.state.selectPhotoId] && (
+          <Modal
+            bigImg={this.state.photoArr[this.state.selectPhotoId].bigImg}           
+            switchModal={this.switchModal}
+          />
+        )}
       </Div>
     );
   }

@@ -3,9 +3,7 @@ import { Component } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { ReactComponent as ReactSVG2 } from '../../image/svg/circle_close_icon.svg';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ModalOverlay, ImageBox, ModalButton, ModalImg } from './Modal.style';
-import { Loader } from 'components/Loader/Loader';
 
 const modalRoot = document.getElementById('modal-root');
 
@@ -21,20 +19,6 @@ export class Modal extends Component {
     }
   };
 
-  testImage = URL => {
-    let tester = new Image();
-    tester.onerror = this.imageNotFound;
-    tester.src = URL;
-    return URL;
-  };
-
-  imageNotFound = () => {
-    this.props.switchModal();    
-    Notify.failure(
-      'That image was not found!!! Probably problems with the Internet connection!!!'
-    );
-  };
-
   componentDidMount() {
     window.addEventListener('keydown', this.handleEsc);    
   }
@@ -44,7 +28,7 @@ export class Modal extends Component {
   }
 
   render() {
-    const { bigImg, discription, isLoading, switchModal } = this.props;
+    const { bigImg, switchModal } = this.props;
 
     return createPortal(
       <>
@@ -55,12 +39,11 @@ export class Modal extends Component {
           <ImageBox>
             <ModalImg
               onerror="src='../../image/no_internet.webp'"
-              src={this.testImage(bigImg)}
-              alt={discription}
+              src={bigImg}
+              alt="There should have been a big picture here!!!"
             />
           </ImageBox>
         </ModalOverlay>
-        {isLoading && <Loader />}
       </>,
       modalRoot
     );
@@ -69,7 +52,5 @@ export class Modal extends Component {
 
 Modal.propTypes = {
   bigImg: PropTypes.string.isRequired,
-  discription: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool.isRequired,
   switchModal: PropTypes.func.isRequired  
 }
